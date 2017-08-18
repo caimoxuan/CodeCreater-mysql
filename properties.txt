@@ -1,0 +1,7 @@
+#基础包名
+basePackageName=com.cmx
+beanPath=entity
+mapperPath=mapper
+daoPath=dao
+servicePath=service
+serviceImplPath=service.impl
