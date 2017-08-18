@@ -38,7 +38,7 @@ public class CodeCreater {
 	/**
 	 * 初始化传参 参数存放再一个配置文件中：properties.txt
 	 */
-	public void initConfigMap(String filePath){
+	public void initConfigMap(){
 		Properties p = new Properties();
 		String classpath = Class.class.getClass().getResource("/").getPath();
 		try{
@@ -54,26 +54,48 @@ public class CodeCreater {
 		configMap.put("daoPath", p.get("daoPath").toString().replace(".", "\\"));
 		configMap.put("servicePath", p.get("servicePath").toString().replace(".", "\\"));
 		configMap.put("serviceImplPath", p.get("serviceImplPath").toString().replace(".", "\\"));
+		configMap.put("filePath", p.get("filePath").toString());
+		configMap.put("suffix", p.get("suffix").toString());
+		configMap.put("basePath", p.get("basePath").toString());
+		
+		Map<String, Object> connectionMap = new HashMap<String, Object>();
+		connectionMap.put("username", p.get("username").toString());
+		connectionMap.put("password", p.get("password").toString());
+		connectionMap.put("jdbcDriver", p.get("jdbcDriver").toString());
+		connectionMap.put("url", p.get("url").toString());
+		MySqlConnection.init(connectionMap);
+		
 	}
 	
 	
 	public static void main(String[] args){
 		
 		CodeCreater cc = new CodeCreater();
-		cc.initConfigMap("src\\com\\pro\\test\\mappercreater\\properties.txt");
-//		try {
-//			Map<String, Object> tableinfo = cc.getTableName(MySqlConnection.getConnection());
-//			
-//			//System.out.println(tableinfo.toString());
-//			BeanCreater bc = new BeanCreater();
-//			//bc.beanCreate(tableinfo);
-//			MapperCreater mc = new MapperCreater();
-//			mc.mapperCreater(tableinfo);
-//			MySqlConnection.closeConnection();
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		cc.initConfigMap();
+		
+		try{
+		Map<String,Object> tableinfo = cc.getTableName(MySqlConnection.getConnection());
+			//创建bean
+			BeanCreater bc = new BeanCreater();
+			bc.setConfigMap(cc.configMap);
+			bc.beanCreate(tableinfo);
+			//创建mapper
+			MapperCreater mc = new MapperCreater();
+			mc.setConfigMap(cc.configMap);
+			mc.mapperCreater(tableinfo);
+			//创建base
+			BaseCreater basec = new BaseCreater();
+			basec.setConfigMap(cc.configMap);
+			basec.createBaseDao();
+			//创建dao
+			DaoCreater dc = new DaoCreater();
+			dc.setConfigMap(cc.configMap);
+			dc.createDao(tableinfo);
+			
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		
 		
 	}
@@ -91,7 +113,7 @@ public class CodeCreater {
 			if("TABLE".equals(rs.getString(4))||"VIEW".equals(rs.getString(4))){
 				//根据表名提取表信息：  
 				String tablename = rs.getString(3);
-	            ResultSet colRet = dbMetData.getColumns(null, "%", tablename, "%");  
+	            ResultSet colRet = dbMetData.getColumns(null, "%", tablename, "%");
 	            while (colRet.next()) {
 	                String columnName = colRet.getString("COLUMN_NAME");
 	                String columnType = colRet.getString("TYPE_NAME");
@@ -104,6 +126,13 @@ public class CodeCreater {
 	                infomap.put("nullAble", nullAble);
 	                tableinfolist.add(infomap);
 	            } 
+	            ResultSet primaryKeySet = dbMetData.getPrimaryKeys(null, null, tablename);
+	            List<String> primaryList = new ArrayList<String>();
+ 	            while(primaryKeySet.next()){
+	            	String primaryKey = primaryKeySet.getString("COLUMN_NAME");
+	            	primaryList.add(primaryKey);
+	            }
+ 	            tableinfo.put(tablename+"-key", primaryList);//获取数据库表的主键，放到map中
 	            tableinfo.put(tablename, tableinfolist);
 			}
 		}

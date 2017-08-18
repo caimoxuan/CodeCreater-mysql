@@ -7,33 +7,13 @@ import java.util.Set;
 
 import com.pro.test.mappercreater.util.FileCreateUtil;
 
-public class BeanCreater {
+public class BeanCreater extends Creater{
 	
 	BeanCreater(){
-		Map<String, Object> config = new HashMap<String, Object>();
-		config.put("packageName", "com.cmx.entity");
-		this.setConfigMap(config);
+		configMap.put("basePackageName", "com.cmx");
+		configMap.put("beanPath", "entity");
 	}
 	
-	private String filepath = System.getProperty("user.dir");
-	
-	private Map<String, Object> configMap;
-	
-	public Map<String, Object> getConfigMap() {
-		return configMap;
-	}
-
-	public void setConfigMap(Map<String, Object> configMap) {
-		this.configMap = configMap;
-	}
-
-	public String getFilepath() {
-		return filepath;
-	}
-
-	public void setFilepath(String filepath) {
-		this.filepath = filepath;
-	}
 
 	@SuppressWarnings("unchecked")
 	public void beanCreate(Map<String, Object> tableinfo){
@@ -51,9 +31,11 @@ public class BeanCreater {
 					newStr += splitStr[i].substring(0,1).toUpperCase()+splitStr[i].substring(1);
 				}
 			}
-			
-			createBeanCode(newStr, (List<Map<String, Object>>)tableinfo.get(s));
-			break;
+			if(s.endsWith("-key")){//主键
+				
+			}else{
+				createBeanCode(newStr, (List<Map<String, Object>>)tableinfo.get(s));
+			}
 		}
 		
 	}
@@ -62,7 +44,8 @@ public class BeanCreater {
 	public String createBeanCode(String beanName, List<Map<String, Object>> infolist){
 		StringBuffer sb = new StringBuffer();
 		Map<String, String> columninfo = new HashMap<String, String>();
-		sb.append("package " + configMap.get("packageName")+";\n");
+		String beanPackage = configMap.get("basePackageName").toString().replace("\\", ".")+"."+configMap.get("beanPath");
+		sb.append("package " + beanPackage+";\n");
 		sb.append("\nimport java.io.Serializable;\n");
 		sb.append("\npublic class " + beanName + " implements Serializable {\n");
 			sb.append("\tprivate static final long serialVersionUID = 1L;\n");
@@ -93,7 +76,7 @@ public class BeanCreater {
 				for(String s : columninfo.keySet()){
 					configCount--;
 					if(configCount <= 0){
-						sb.append("\t\t+\"" + s + "=\" + " + s + " +\n");
+						sb.append("\t\t+\"" + s + "=\" + " + s + " \n");
 					}else{
 						sb.append("\t\t+\"" + s + "=\" + " + s + " + \",\"\n");
 					}
@@ -101,6 +84,13 @@ public class BeanCreater {
 				sb.append("\t\t+\"]\";\n");
 			sb.append("\t}");
 		sb.append("\n}");
+		
+		try{
+			String beanPath = configMap.get("filePath")+"\\"+configMap.get("basePackageName").toString()+"\\"+configMap.get("beanPath");
+			FileCreateUtil.createFile(beanName+".java",	beanPath, sb.toString());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		//System.out.println(sb.toString());
 		return sb.toString();
 		

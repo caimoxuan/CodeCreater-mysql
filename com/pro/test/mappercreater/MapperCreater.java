@@ -9,25 +9,18 @@ import java.util.Set;
 
 import com.pro.test.mappercreater.util.FileCreateUtil;
 
-public class MapperCreater {
+public class MapperCreater extends Creater{
 	
-	private Map<String, Object> configMap;
 	
 	MapperCreater(){
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("packageName", "com.cmx.mapper");
-		map.put("suffix", "Dao");
-		this.setConfigMap(map);
+		super();
+		configMap.put("basePackageName", "com.cmx");
+		configMap.put("mapperPath", "mapper");
+		configMap.put("suffix", "Dao");
 	}
 	
-	public Map<String, Object> getConfigMap() {
-		return configMap;
-	}
-
-	public void setConfigMap(Map<String, Object> configMap) {
-		this.configMap = configMap;
-	}
 	
+	@SuppressWarnings("unchecked")
 	public void mapperCreater(Map<String, Object> tableinfo){
 		Set<String> tablename = tableinfo.keySet();
 		
@@ -41,8 +34,11 @@ public class MapperCreater {
 					newStr += splitStr[i].substring(0,1).toUpperCase()+splitStr[i].substring(1);
 				}
 			}
-			
-			mapperCodeCreater(newStr, s, (List<Map<String, Object>>)tableinfo.get(s));
+			if(s.endsWith("-key")){//这里取到每个表的主键，但是一般情况下，表都使用id当做操作条件，所以暂时不使用主键。
+				//System.out.println(tableinfo.get(s));
+			}else{
+				mapperCodeCreater(newStr, s, (List<Map<String, Object>>)tableinfo.get(s));
+			}
 		}
 	}
 	
@@ -54,12 +50,12 @@ public class MapperCreater {
 		for(int i = 0; i < infolist.size(); i++){
 			configNameList.add(((Map<String, Object>)infolist.get(i)).get("columnName").toString());
 		}
-			
+		
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\n");
-		sb.append("<mapper namespace=\""+ configMap.get("packageName")+ upName + configMap.get("suffix")+"\">\n");
+		sb.append("<mapper namespace=\""+ configMap.get("basePackageName").toString().replace("\\", ".") + "." + configMap.get("daoPath")+ "." + upName + configMap.get("suffix")+"\">\n");
 		//selectId start
-		sb.append("\t<sql id = \"selecrId\">\n");
+		sb.append("\t<sql id = \"selectId\">\n");
 		for(int i = 0; i < configNameList.size(); i++){
 			if(i != configNameList.size()-1){
 				sb.append("\t\t" + configNameList.get(i) + ",\n");
@@ -71,7 +67,7 @@ public class MapperCreater {
 		//selectId end
 		sb.append("\n");
 		//select start
-		sb.append("\t<select id = \"query\" resultMap = \""+ beanName +"\" parameterType = \"java.util.HashMap\">\n");
+		sb.append("\t<select id = \"query\" resultType = \""+ beanName +"\" parameterType = \"java.util.HashMap\">\n");
 		sb.append("\t\tselect <include refid = \"selectId\" />\n");
 		sb.append("\t\tfrom "+ tableName +" \n");
 		sb.append("\t\t<where>\n");
@@ -86,7 +82,7 @@ public class MapperCreater {
 		//select end
 		sb.append("\n");
 		//insert start
-		sb.append("\t<insert id = \"add\" keyProperty = \"id\" parameterType = \""+ beanName +"\" userGeneratedKey = \"true\">\n");
+		sb.append("\t<insert id = \"add\" keyProperty = \"id\" parameterType = \""+ beanName +"\" useGeneratedKeys = \"true\">\n");
 		sb.append("\t\tinsert into "+ tableName +"(\n");
 		for(int i = 0; i < configNameList.size(); i++){
 			if(i != configNameList.size()-1){
@@ -119,13 +115,14 @@ public class MapperCreater {
 		for(int i = 0; i < configNameList.size(); i++){
 			String configName = configNameList.get(i);
 			sb.append("\t\t\t<if test = \""+ configName +" != null\">\n");
-			if(i != configNameList.size()){
+			if(i != configNameList.size()-1){
 				sb.append("\t\t\t\t"+ configName +" = #{"+ configName +"},\n");
 			}else{
 				sb.append("\t\t\t\t"+ configName +" = #{"+ configName +"}\n");
 			}
 			sb.append("\t\t\t</if>\n");
 		}
+		sb.append("\t\t</set>\n");
 		sb.append("\t\twhere id = #{id}\n");
 		sb.append("\t</update>\n");
 		//update end
@@ -142,7 +139,8 @@ public class MapperCreater {
 		
 		//System.out.println(sb.toString());
 		try {
-			FileCreateUtil.createFile(beanName.toLowerCase()+"-mapper.xml", "F:\\com\\cmx\\mapper\\", sb.toString());
+			String mapperPath = configMap.get("filePath")+"\\"+configMap.get("basePackageName").toString()+"\\"+configMap.get("mapperPath");
+			FileCreateUtil.createFile(beanName.toLowerCase()+"-mapper.xml", mapperPath, sb.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

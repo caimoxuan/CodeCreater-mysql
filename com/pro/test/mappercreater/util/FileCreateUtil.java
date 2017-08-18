@@ -23,7 +23,7 @@ public class FileCreateUtil {
 		}
 		
 		
-		f = new File(filePath+fileName);
+		f = new File(filePath+"\\"+fileName);
 		fw = new FileWriter(f);
 		
 		fw.write(content);

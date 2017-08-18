@@ -3,11 +3,10 @@ package com.pro.test.mappercreater;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Map;
 
 
 public class MySqlConnection {
-	
-	private MySqlConnection connection;
 	
 	private MySqlConnection(){}
 	
@@ -16,6 +15,13 @@ public class MySqlConnection {
 	private static String pass = "cloudnetcom123";
 	private static Connection conn = null;
 	
+	private static Map<String, Object> configMap;
+	
+	
+	public static void init(Map<String, Object> map){
+		configMap = map;
+	}
+
 	public static Connection getConnection(){
 		
 		if(conn != null){
@@ -23,14 +29,22 @@ public class MySqlConnection {
 		}else{
 			
 			try {
-				Class.forName("com.mysql.jdbc.Driver");
+				if(configMap.get("jdbcDriver") != null){
+					Class.forName(configMap.get("jdbcDriver").toString());
+				}else{
+					Class.forName("com.mysql.jdbc.Driver");
+				}
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 			try{
-				 conn = DriverManager.getConnection(path, user, pass);
+				if(configMap.get("url") != null && configMap.get("password") != null && configMap.get("username") != null){
+					conn = DriverManager.getConnection(configMap.get("url").toString(), configMap.get("username").toString(), configMap.get("password").toString());
+				}else{
+					conn = DriverManager.getConnection(path, user, pass);
+				}
 			}catch(SQLException e1){
 				e1.printStackTrace();
 			}
