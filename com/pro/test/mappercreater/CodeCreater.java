@@ -91,6 +91,10 @@ public class CodeCreater {
 			DaoCreater dc = new DaoCreater();
 			dc.setConfigMap(cc.configMap);
 			dc.createDao(tableinfo);
+			//创建service
+			ServiceCreater sc = new ServiceCreater();
+			sc.setConfigMap(cc.configMap);
+			sc.createService(tableinfo);
 			
 			
 		}catch(Exception e){
