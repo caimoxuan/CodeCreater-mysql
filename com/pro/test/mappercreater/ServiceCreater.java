@@ -64,7 +64,7 @@ public class ServiceCreater extends Creater{
 		sb.append("import " + beanPath + "." + beanName + ";\n");
  		sb.append("import " + basePath + ".BaseServiceImpl;\n\n" );
  		
- 		sb.append("@Service("+beanName.substring(0,1).toLowerCase()+beanName.substring(1) + "Service)\n");
+ 		sb.append("@Service(\""+beanName.substring(0,1).toLowerCase()+beanName.substring(1) + "Service\")\n");
  		sb.append("public class " + beanName + "ServiceImpl extends BaseServiceImpl<" + beanName + "> implements " + beanName + "Service {\n\n");
  		sb.append("\n}");
 		

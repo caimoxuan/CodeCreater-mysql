@@ -29,6 +29,7 @@ public class CodeCreater {
 	String userRoot;
 	
 	Map<String, Object> configMap = new HashMap<String, Object>();
+	Map<String, Object> connectionMap = new HashMap<String, Object>();
 
 	CodeCreater(){
 		userRoot = System.getProperty("user.dir");
@@ -57,8 +58,10 @@ public class CodeCreater {
 		configMap.put("filePath", p.get("filePath").toString());
 		configMap.put("suffix", p.get("suffix").toString());
 		configMap.put("basePath", p.get("basePath").toString());
+		configMap.put("transactionManagerType", p.get("transactionManagerType").toString());
+		configMap.put("dataSourcePool", p.get("dataSourcePool").toString());
 		
-		Map<String, Object> connectionMap = new HashMap<String, Object>();
+		
 		connectionMap.put("username", p.get("username").toString());
 		connectionMap.put("password", p.get("password").toString());
 		connectionMap.put("jdbcDriver", p.get("jdbcDriver").toString());
@@ -95,6 +98,11 @@ public class CodeCreater {
 			ServiceCreater sc = new ServiceCreater();
 			sc.setConfigMap(cc.configMap);
 			sc.createService(tableinfo);
+			
+			ApplicationCreater ac = new ApplicationCreater();
+			ac.setConfigMap(cc.configMap);
+			ac.setJdbcMap(cc.connectionMap);
+			ac.applicationCreater();
 			
 			
 		}catch(Exception e){

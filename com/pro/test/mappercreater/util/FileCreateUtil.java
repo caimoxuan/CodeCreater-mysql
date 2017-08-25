@@ -22,7 +22,7 @@ public class FileCreateUtil {
 				System.out.println("创建失败");
 		}
 		
-		
+		System.out.println("创建文件："+filePath+"\\"+fileName);
 		f = new File(filePath+"\\"+fileName);
 		fw = new FileWriter(f);
 		

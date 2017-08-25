@@ -7,11 +7,17 @@ daoPath=dao
 basePath=base
 servicePath=service
 serviceImplPath=service.impl
-filePath=F:
+filePath=F:src
 createOverride=true
+#Application
+#druid jdbc
+dataSourcePool=druid
+#annotation pointcut
+transactionManagerType=pointcut
 
 #数据库路连接配置
 username=root
 password=
 jdbcDriver=com.mysql.jdbc.Driver
 url=jdbc:mysql://127.0.0.1:3306/cmx
+
