@@ -1,6 +1,5 @@
 package com.pro.test.mappercreater;
 
-import java.io.IOException;
 import java.util.Map;
 
 import com.pro.test.mappercreater.util.FileCreateUtil;

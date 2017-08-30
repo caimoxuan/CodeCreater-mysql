@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.pro.test.mappercreater.util.FileCreateUtil;
-
 
 /**
  * 
@@ -103,6 +101,10 @@ public class CodeCreater {
 			ac.setConfigMap(cc.configMap);
 			ac.setJdbcMap(cc.connectionMap);
 			ac.applicationCreater();
+			
+			MvcCreater mvc = new MvcCreater();
+			mvc.setConfigMap(cc.configMap);
+			mvc.createWEB_INFRoot();
 			
 			
 		}catch(Exception e){
