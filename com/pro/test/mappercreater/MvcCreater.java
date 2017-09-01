@@ -57,7 +57,7 @@ public class MvcCreater extends Creater{
 		sb.append("\t<!-- 自动扫描注解 -->\n"+
 				  "\t<context:component-scan base-package = \""+ basePackageName +".controller\" />\n");
 		sb.append("\n");
-		sb.append("\t<mvc:annotation-dirven></mvc:annotation-driven>");
+		sb.append("\t<mvc:annotation-driven></mvc:annotation-driven>");
 		sb.append("\n");
 		sb.append("\t<!--jsp 视图解析器  请在WEB-INF下创建jsp文件夹 否则请修改 perfix 配置 -->\n");
 		sb.append("\t<bean id=\"jspViewResolver\" class=\"org.springframework.web.servlet.view.InternalResourceViewResolver\" p:order=\"2\" >\n");
