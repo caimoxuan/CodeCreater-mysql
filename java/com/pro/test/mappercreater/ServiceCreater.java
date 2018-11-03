@@ -1,10 +1,11 @@
-package com.pro.test.mappercreater;
+package pro.test.mappercreater;
+
+import pro.test.mappercreater.util.FileCreateUtil;
+import pro.test.mappercreater.util.NameUtil;
 
 import java.util.Map;
 import java.util.Set;
 
-import com.pro.test.mappercreater.util.FileCreateUtil;
-import com.pro.test.mappercreater.util.NameUtil;
 
 public class ServiceCreater extends Creater{
 	

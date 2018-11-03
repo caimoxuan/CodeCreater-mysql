@@ -1,4 +1,4 @@
-package com.pro.test.mappercreater.testbean;
+package pro.test.mappercreater.testbean;
 
 import java.io.Serializable;
 

@@ -17,7 +17,7 @@ transactionManagerType=pointcut
 
 #数据库路连接配置
 username=root
-password=
+password=cmx123
 jdbcDriver=com.mysql.jdbc.Driver
-url=jdbc:mysql://127.0.0.1:3306/shiro
+url=jdbc:mysql://127.0.0.1:3306/cmx
 

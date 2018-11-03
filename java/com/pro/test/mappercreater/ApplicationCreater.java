@@ -1,8 +1,9 @@
-package com.pro.test.mappercreater;
+package pro.test.mappercreater;
+
+import pro.test.mappercreater.util.FileCreateUtil;
 
 import java.util.Map;
 
-import com.pro.test.mappercreater.util.FileCreateUtil;
 
 public class ApplicationCreater extends Creater{
 	

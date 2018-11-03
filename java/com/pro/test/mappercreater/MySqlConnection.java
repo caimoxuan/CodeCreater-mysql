@@ -1,4 +1,4 @@
-package com.pro.test.mappercreater;
+package pro.test.mappercreater;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

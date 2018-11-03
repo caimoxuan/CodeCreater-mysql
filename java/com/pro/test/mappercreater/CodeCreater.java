@@ -1,4 +1,4 @@
-package com.pro.test.mappercreater;
+package pro.test.mappercreater;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class CodeCreater {
 		String classpath = Class.class.getClass().getResource("/").getPath();
 		try{
 			//p.load(new FileInputStream(userRoot+"\\"+filePath));
-			p.load(new FileInputStream(URLDecoder.decode(classpath, "utf-8")+"com\\pro\\test\\mappercreater\\properties.txt"));
+			p.load(new FileInputStream(URLDecoder.decode(classpath, "utf-8")+"pro\\test\\mappercreater\\properties.txt"));
 		}catch(IOException e){
 			e.printStackTrace();
 		}
@@ -123,7 +123,7 @@ public class CodeCreater {
 		ResultSet rs = dbMetData.getTables(null, null, null, new String[]{"TABLE", "VIEW"});
 		
 		while(rs.next()){
-			List<Map<String, Object>> tableinfolist = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> tableinfolist = new ArrayList<>();
 			if("TABLE".equals(rs.getString(4))||"VIEW".equals(rs.getString(4))){
 				//根据表名提取表信息：  
 				String tablename = rs.getString(3);
@@ -141,7 +141,7 @@ public class CodeCreater {
 	                tableinfolist.add(infomap);
 	            } 
 	            ResultSet primaryKeySet = dbMetData.getPrimaryKeys(null, null, tablename);
-	            List<String> primaryList = new ArrayList<String>();
+	            List<String> primaryList = new ArrayList<>();
  	            while(primaryKeySet.next()){
 	            	String primaryKey = primaryKeySet.getString("COLUMN_NAME");
 	            	primaryList.add(primaryKey);

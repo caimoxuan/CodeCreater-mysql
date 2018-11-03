@@ -1,7 +1,7 @@
-package com.pro.test.mappercreater;
+package pro.test.mappercreater;
 
-import com.pro.test.mappercreater.util.FileCreateUtil;
 
+import pro.test.mappercreater.util.FileCreateUtil;
 
 public class BaseCreater extends Creater{
 	

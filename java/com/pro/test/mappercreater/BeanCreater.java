@@ -1,11 +1,12 @@
-package com.pro.test.mappercreater;
+package pro.test.mappercreater;
+
+import pro.test.mappercreater.util.FileCreateUtil;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.pro.test.mappercreater.util.FileCreateUtil;
 
 public class BeanCreater extends Creater{
 	

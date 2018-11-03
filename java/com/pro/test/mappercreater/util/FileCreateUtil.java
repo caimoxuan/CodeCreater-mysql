@@ -1,4 +1,4 @@
-package com.pro.test.mappercreater.util;
+package pro.test.mappercreater.util;
 
 import java.io.File;
 import java.io.FileWriter;

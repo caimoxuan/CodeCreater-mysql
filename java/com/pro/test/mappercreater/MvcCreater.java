@@ -1,4 +1,6 @@
-package com.pro.test.mappercreater;
+package pro.test.mappercreater;
+
+import pro.test.mappercreater.util.FileCreateUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,7 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URLDecoder;
 
-import com.pro.test.mappercreater.util.FileCreateUtil;
 
 public class MvcCreater extends Creater{
 	
