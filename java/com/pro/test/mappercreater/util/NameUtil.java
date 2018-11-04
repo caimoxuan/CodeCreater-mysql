@@ -1,8 +1,11 @@
 package pro.test.mappercreater.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class NameUtil {
-	
-	
+
+	private static Pattern linePattern = Pattern.compile("_(\\w)");
 	
 	public static String getBeanName(String tableName){
 		
@@ -17,6 +20,17 @@ public class NameUtil {
 		}
 		
 		return newStr;
+	}
+
+	public static String lineToHump(Object str){
+		str = str.toString().toLowerCase();
+		Matcher matcher = linePattern.matcher((String)str);
+		StringBuffer sb = new StringBuffer();
+		while(matcher.find()){
+			matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+		}
+		matcher.appendTail(sb);
+		return sb.toString();
 	}
 	
 }

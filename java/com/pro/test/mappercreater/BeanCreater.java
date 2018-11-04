@@ -23,8 +23,9 @@ public class BeanCreater extends Creater{
 		
 		for(String s : tablename){
 			//System.out.println(s);
-			s = s.toLowerCase();
-			String newStr = s.substring(0, 1).toUpperCase()+s.substring(1);
+			String str = s.toLowerCase();
+			str = str.replace("t_", "");
+			String newStr = str.substring(0, 1).toUpperCase()+str.substring(1);
 			if(newStr.indexOf("_") != -1){
 				String[] splitStr = newStr.split("_");
 				newStr = "";

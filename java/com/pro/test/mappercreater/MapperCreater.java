@@ -1,6 +1,8 @@
 package pro.test.mappercreater;
 
 import pro.test.mappercreater.util.FileCreateUtil;
+import pro.test.mappercreater.util.NameUtil;
+import pro.test.mappercreater.util.SqlTypeUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,10 +25,10 @@ public class MapperCreater extends Creater{
 	@SuppressWarnings("unchecked")
 	public void mapperCreater(Map<String, Object> tableinfo){
 		Set<String> tablename = tableinfo.keySet();
-		
+
 		for(String s : tablename){
-			s = s.toLowerCase();
-			String newStr = s.substring(0, 1).toUpperCase()+s.substring(1);
+			String str = s.toLowerCase().replace("t_", "");
+			String newStr = str.substring(0, 1).toUpperCase()+str.substring(1);
 			if(newStr.indexOf("_") != -1){
 				String[] splitStr = newStr.split("_");
 				newStr = "";
@@ -54,20 +56,29 @@ public class MapperCreater extends Creater{
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\n");
 		sb.append("<mapper namespace=\""+ configMap.get("basePackageName").toString().replace("\\", ".") + "." + configMap.get("daoPath")+ "." + upName + configMap.get("suffix")+"\">\n");
+		//resultMap
+		sb.append("\t<resultMap id=\"BaseResultMap\" type=\"" + beanName + "\" >\n");
+		infolist.forEach((value) -> {
+			sb.append("\t\t<result column=\""+ value.get("columnName") +"\" property=\""+ NameUtil.lineToHump(value.get("columnName"))+"\" jdbcType=\""+ SqlTypeUtil.getJavaType(value.get("columnType").toString()) +"\" />\n");
+		});
+		sb.append("\t</resultMap>\n\n");
 		//selectId start
 		sb.append("\t<sql id = \"selectId\">\n");
 		for(int i = 0; i < configNameList.size(); i++){
 			if(i != configNameList.size()-1){
-				sb.append("\t\t" + configNameList.get(i) + ",\n");
+				sb.append("\t\t" + configNameList.get(i) + ", ");
+				if((i+1) % 5 == 0){
+					sb.append("\n");
+				}
 			}else{
-				sb.append("\t\t" + configNameList.get(i) + "\n");
+				sb.append(configNameList.get(i) + "\n");
 			}
 		}
 		sb.append("\t</sql>\n");
 		//selectId end
 		sb.append("\n");
 		//select start
-		sb.append("\t<select id = \"query\" resultType = \""+ beanName +"\" parameterType = \"java.util.HashMap\">\n");
+		sb.append("\t<select id = \"query\" resultType = \""+ beanName +"\" parameterType = \"BaseResultMap\">\n");
 		sb.append("\t\tselect <include refid = \"selectId\" />\n");
 		sb.append("\t\tfrom "+ tableName +" \n");
 		sb.append("\t\t<where>\n");
@@ -140,7 +151,7 @@ public class MapperCreater extends Creater{
 		//System.out.println(sb.toString());
 		try {
 			String mapperPath = configMap.get("filePath")+"\\"+configMap.get("basePackageName").toString()+"\\"+configMap.get("mapperPath");
-			FileCreateUtil.createFile(beanName.toLowerCase()+"-mapper.xml", mapperPath, sb.toString());
+			FileCreateUtil.createFile(NameUtil.lineToHump(beanName.toLowerCase())+"Mapper.xml", mapperPath, sb.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
