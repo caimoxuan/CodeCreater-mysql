@@ -19,5 +19,5 @@ transactionManagerType=pointcut
 username=root
 password=cmx123
 jdbcDriver=com.mysql.jdbc.Driver
-url=jdbc:mysql://127.0.0.1:3306/cmx
+url=jdbc:mysql://127.0.0.1:3306/member_center
 

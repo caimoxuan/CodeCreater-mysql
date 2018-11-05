@@ -62,16 +62,31 @@ public class MapperCreater extends Creater{
 			sb.append("\t\t<result column=\""+ value.get("columnName") +"\" property=\""+ NameUtil.lineToHump(value.get("columnName"))+"\" jdbcType=\""+ SqlTypeUtil.getJavaType(value.get("columnType").toString()) +"\" />\n");
 		});
 		sb.append("\t</resultMap>\n\n");
+
+		sb.append("\t<sql id = \"table\">\n\t\t"+tableName+"\n\t</sql>\n");
 		//selectId start
-		sb.append("\t<sql id = \"selectId\">\n");
+		sb.append("\n\t<sql id = \"columns\">\n\t\t");
 		for(int i = 0; i < configNameList.size(); i++){
 			if(i != configNameList.size()-1){
-				sb.append("\t\t" + configNameList.get(i) + ", ");
+				sb.append(configNameList.get(i) + ", ");
 				if((i+1) % 5 == 0){
-					sb.append("\n");
+					sb.append("\n\t\t");
 				}
 			}else{
 				sb.append(configNameList.get(i) + "\n");
+			}
+		}
+		sb.append("\t</sql>\n");
+
+		sb.append("\n\t<sql id = \"values\">\n\t\t");
+		for(int i = 0; i < configNameList.size(); i++){
+			if(i != configNameList.size()-1){
+				sb.append("#{"+configNameList.get(i) + "}, ");
+				if((i+1) % 5 == 0){
+					sb.append("\n\t\t");
+				}
+			}else{
+				sb.append("#{" + configNameList.get(i) + "}\n");
 			}
 		}
 		sb.append("\t</sql>\n");
@@ -79,14 +94,14 @@ public class MapperCreater extends Creater{
 		sb.append("\n");
 		//select start
 		sb.append("\t<select id = \"query\" resultType = \""+ beanName +"\" parameterType = \"BaseResultMap\">\n");
-		sb.append("\t\tselect <include refid = \"selectId\" />\n");
-		sb.append("\t\tfrom "+ tableName +" \n");
+		sb.append("\t\tselect <include refid = \"columns\" />\n");
+		sb.append("\t\tfrom <include refid=\"table\"/> \n");
 		sb.append("\t\t<where>\n");
 		for(int i = 0; i < configNameList.size(); i++){
 			String columnName = configNameList.get(i);
-			sb.append("\t\t\t<if test = \""+ columnName +" != null\">\n");
-			sb.append("\t\t\t\tAND "+ columnName +" = " + "#{"+ columnName +"}\n");
-			sb.append("\t\t\t</if>\n");
+			sb.append("\t\t\t<if test = \""+ columnName +" != null\">");
+			sb.append("AND "+ columnName +" = " + "#{"+ columnName +"}");
+			sb.append("</if>\n");
 		}
 		sb.append("\t\t</where>\n");
 		sb.append("\t</select>\n");
@@ -94,53 +109,49 @@ public class MapperCreater extends Creater{
 		sb.append("\n");
 		//insert start
 		sb.append("\t<insert id = \"add\" keyProperty = \"id\" parameterType = \""+ beanName +"\" useGeneratedKeys = \"true\">\n");
-		sb.append("\t\tinsert into "+ tableName +"(\n");
-		for(int i = 0; i < configNameList.size(); i++){
-			if(i != configNameList.size()-1){
-				sb.append("\t\t\t" + configNameList.get(i) + ",\n");
-			}else{
-				sb.append("\t\t\t" + configNameList.get(i) + ")\n");
-			}
-		}
-		sb.append("\t\tvalues(\n");
-		for(int i = 0; i < configNameList.size(); i++){
-			if(i != configNameList.size()-1){
-				sb.append("\t\t\t#{" + configNameList.get(i) + "},\n");
-			}else{
-				sb.append("\t\t\t#{" + configNameList.get(i) + "})\n");
-			}
-		}
+		sb.append("\t\tinsert into <include refid=\"table\"/>(<include refid=\"columns\"/>)\n");
+//		for(int i = 0; i < configNameList.size(); i++){
+//			if(i != configNameList.size()-1){
+//				sb.append("\t\t\t" + configNameList.get(i) + ",\n");
+//			}else{
+//				sb.append("\t\t\t" + configNameList.get(i) + ")\n");
+//			}
+//		}
+		sb.append("\t\tvalues (<include refid=\"values\"/>)\n");
+//		for(int i = 0; i < configNameList.size(); i++){
+//			if(i != configNameList.size()-1){
+//				sb.append("\t\t\t#{" + configNameList.get(i) + "},\n");
+//			}else{
+//				sb.append("\t\t\t#{" + configNameList.get(i) + "})\n");
+//			}
+//		}
 		sb.append("\t</insert>\n");
 		//insert end
 		sb.append("\n");
 		//delete start 
 		sb.append("\t<delete id = \"delete\" parameterType = \"String\">\n");
-		sb.append("\t\tdelete from "+ tableName + " where id = #{id}\n");
+		sb.append("\t\tdelete from <include refid=\"table\"/>\n\t\twhere id = #{id}\n");
 		sb.append("\t</delete>\n");
 		//delete end
 		sb.append("\n");
 		//update start
 		sb.append("\t<update id = \"modify\" parameterType = \""+ beanName +"\">\n");
-		sb.append("\t\tupdate "+ tableName +"\n");
-		sb.append("\t\t<set>\n");
+		sb.append("\t\tupdate <include refid=\"table\"/>\n");
+		sb.append("\t\t<trim prefix=\"SET\" suffixOverrides=\",\">\n");
 		for(int i = 0; i < configNameList.size(); i++){
 			String configName = configNameList.get(i);
-			sb.append("\t\t\t<if test = \""+ configName +" != null\">\n");
-			if(i != configNameList.size()-1){
-				sb.append("\t\t\t\t"+ configName +" = #{"+ configName +"},\n");
-			}else{
-				sb.append("\t\t\t\t"+ configName +" = #{"+ configName +"}\n");
-			}
-			sb.append("\t\t\t</if>\n");
+			sb.append("\t\t\t<if test = \""+ configName +" != null\">");
+			sb.append(configName +" = #{"+ configName +"},");
+			sb.append("</if>\n");
 		}
-		sb.append("\t\t</set>\n");
+		sb.append("\t\t</trim>\n");
 		sb.append("\t\twhere id = #{id}\n");
 		sb.append("\t</update>\n");
 		//update end
 		sb.append("\n");
 		//getById start 
 		sb.append("\t<select id = \"getById\" parameterType = \"String\" resultType = \""+ beanName +"\">\n");
-		sb.append("\t\tselect <include refid = \"selectId\" />\n");
+		sb.append("\t\tselect <include refid = \"columns\" />\n");
 		sb.append("\t\tfrom "+ tableName +"\n");
 		sb.append("\t\twhere\n");
 		sb.append("\t\tid = #{id}\n");

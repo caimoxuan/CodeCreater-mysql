@@ -131,6 +131,7 @@ public class CodeCreater {
 	            while (colRet.next()) {
 	                String columnName = colRet.getString("COLUMN_NAME");
 	                String columnType = colRet.getString("TYPE_NAME");
+	                String remarks = colRet.getString("REMARKS");
 	                int dataSize = colRet.getInt("COLUMN_SIZE");
 	                int nullAble = colRet.getInt("NULLABLE");
 	                Map<String, Object> infomap = new HashMap<String, Object>();
@@ -138,6 +139,7 @@ public class CodeCreater {
 	                infomap.put("columnType", columnType);
 	                infomap.put("dataSize", dataSize);
 	                infomap.put("nullAble", nullAble);
+	                infomap.put("remarks", remarks);
 	                tableinfolist.add(infomap);
 	            } 
 	            ResultSet primaryKeySet = dbMetData.getPrimaryKeys(null, null, tablename);
