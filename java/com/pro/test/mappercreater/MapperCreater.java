@@ -59,7 +59,7 @@ public class MapperCreater extends Creater{
 		//resultMap
 		sb.append("\t<resultMap id=\"BaseResultMap\" type=\"" + beanName + "\" >\n");
 		infolist.forEach((value) -> {
-			sb.append("\t\t<result column=\""+ value.get("columnName") +"\" property=\""+ NameUtil.lineToHump(value.get("columnName"))+"\" jdbcType=\""+ SqlTypeUtil.getJavaType(value.get("columnType").toString()) +"\" />\n");
+			sb.append("\t\t<result column=\""+ value.get("columnName") +"\" property=\""+ NameUtil.lineToHump(value.get("columnName"))+"\" />\n");
 		});
 		sb.append("\t</resultMap>\n\n");
 
@@ -81,26 +81,26 @@ public class MapperCreater extends Creater{
 		sb.append("\n\t<sql id = \"values\">\n\t\t");
 		for(int i = 0; i < configNameList.size(); i++){
 			if(i != configNameList.size()-1){
-				sb.append("#{"+configNameList.get(i) + "}, ");
+				sb.append("#{" + NameUtil.lineToHump(configNameList.get(i)) + "}, ");
 				if((i+1) % 5 == 0){
 					sb.append("\n\t\t");
 				}
 			}else{
-				sb.append("#{" + configNameList.get(i) + "}\n");
+				sb.append("#{" + NameUtil.lineToHump(configNameList.get(i)) + "}\n");
 			}
 		}
 		sb.append("\t</sql>\n");
 		//selectId end
 		sb.append("\n");
 		//select start
-		sb.append("\t<select id = \"query\" resultType = \""+ beanName +"\" parameterType = \"BaseResultMap\">\n");
+		sb.append("\t<select id = \"query\" parameterType = \""+ beanName +"\" resultMap = \"BaseResultMap\">\n");
 		sb.append("\t\tselect <include refid = \"columns\" />\n");
 		sb.append("\t\tfrom <include refid=\"table\"/> \n");
 		sb.append("\t\t<where>\n");
 		for(int i = 0; i < configNameList.size(); i++){
 			String columnName = configNameList.get(i);
-			sb.append("\t\t\t<if test = \""+ columnName +" != null\">");
-			sb.append("AND "+ columnName +" = " + "#{"+ columnName +"}");
+			sb.append("\t\t\t<if test = \""+ NameUtil.lineToHump(columnName) +" != null\">");
+			sb.append("AND "+ columnName +" = " + "#{"+ NameUtil.lineToHump(columnName) +"}");
 			sb.append("</if>\n");
 		}
 		sb.append("\t\t</where>\n");
@@ -140,8 +140,8 @@ public class MapperCreater extends Creater{
 		sb.append("\t\t<trim prefix=\"SET\" suffixOverrides=\",\">\n");
 		for(int i = 0; i < configNameList.size(); i++){
 			String configName = configNameList.get(i);
-			sb.append("\t\t\t<if test = \""+ configName +" != null\">");
-			sb.append(configName +" = #{"+ configName +"},");
+			sb.append("\t\t\t<if test = \""+ NameUtil.lineToHump(configName) +" != null\">");
+			sb.append(configName +" = #{"+ NameUtil.lineToHump(configName )+"},");
 			sb.append("</if>\n");
 		}
 		sb.append("\t\t</trim>\n");

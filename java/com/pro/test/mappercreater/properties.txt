@@ -1,5 +1,5 @@
 #路径名称的配置
-basePackageName=com.cmx.test
+basePackageName=com.cmx.members.dal
 beanPath=entity
 mapperPath=mapper
 suffix=Dao

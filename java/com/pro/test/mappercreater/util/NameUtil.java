@@ -22,6 +22,10 @@ public class NameUtil {
 		return newStr;
 	}
 
+	public static String getLowCaseName(String name){
+		return name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
+	}
+
 	public static String lineToHump(Object str){
 		str = str.toString().toLowerCase();
 		Matcher matcher = linePattern.matcher((String)str);

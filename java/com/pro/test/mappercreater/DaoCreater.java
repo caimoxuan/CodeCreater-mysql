@@ -24,6 +24,7 @@ public class DaoCreater extends Creater{
 			if(s.endsWith("-key")){
 				
 			}else{
+				s = s.replace("t_", "");
 				daoCodeCreater(NameUtil.getBeanName(s));
 			}
 		}
@@ -42,10 +43,17 @@ public class DaoCreater extends Creater{
 		String suffix = configMap.get("suffix").toString();
 		sb.append("package " + packageName + ";\n\n");
 		sb.append("import java.util.List;\n\n");
-		sb.append("import " + baseDaoPackage+".BaseDao;\n");
+		//sb.append("import " + baseDaoPackage+".BaseDao;\n");
 		sb.append("import " + beanPath + "." + beanName + ";\n\n");
 		
-		sb.append("public interface " + beanName+suffix + " extends BaseDao<" + beanName + "> {\n\n");
+		sb.append("public interface " + beanName+suffix + /**" extends BaseDao<" + beanName + ">*/ "{\n\n");
+
+		sb.append("\tList<" + beanName + "> select("+ beanName + " "+ NameUtil.getLowCaseName(beanName) +");\n\n");
+		sb.append("\tint update("+ beanName + " "+ NameUtil.getLowCaseName(beanName) + ");\n\n");
+		sb.append("\tint insert("+ beanName + " "+ NameUtil.getLowCaseName(beanName) +");\n\n");
+		sb.append("\tint delete("+ beanName + " "+ NameUtil.getLowCaseName(beanName) +");\n\n");
+		sb.append("\t" + beanName + " getById(String id);\n");
+
 		sb.append("}");
 		try{
 			FileCreateUtil.createFile(beanName+suffix+".java", filePath, sb.toString());
