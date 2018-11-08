@@ -93,7 +93,7 @@ public class MapperCreater extends Creater{
 		//selectId end
 		sb.append("\n");
 		//select start
-		sb.append("\t<select id = \"query\" parameterType = \""+ beanName +"\" resultMap = \"BaseResultMap\">\n");
+		sb.append("\t<select id = \"select\" parameterType = \""+ beanName +"\" resultMap = \"BaseResultMap\">\n");
 		sb.append("\t\tselect <include refid = \"columns\" />\n");
 		sb.append("\t\tfrom <include refid=\"table\"/> \n");
 		sb.append("\t\t<where>\n");
@@ -108,7 +108,7 @@ public class MapperCreater extends Creater{
 		//select end
 		sb.append("\n");
 		//insert start
-		sb.append("\t<insert id = \"add\" keyProperty = \"id\" parameterType = \""+ beanName +"\" useGeneratedKeys = \"true\">\n");
+		sb.append("\t<insert id = \"insert\" keyProperty = \"id\" parameterType = \""+ beanName +"\" useGeneratedKeys = \"true\">\n");
 		sb.append("\t\tinsert into <include refid=\"table\"/>(<include refid=\"columns\"/>)\n");
 //		for(int i = 0; i < configNameList.size(); i++){
 //			if(i != configNameList.size()-1){
@@ -135,7 +135,7 @@ public class MapperCreater extends Creater{
 		//delete end
 		sb.append("\n");
 		//update start
-		sb.append("\t<update id = \"modify\" parameterType = \""+ beanName +"\">\n");
+		sb.append("\t<update id = \"update\" parameterType = \""+ beanName +"\">\n");
 		sb.append("\t\tupdate <include refid=\"table\"/>\n");
 		sb.append("\t\t<trim prefix=\"SET\" suffixOverrides=\",\">\n");
 		for(int i = 0; i < configNameList.size(); i++){
