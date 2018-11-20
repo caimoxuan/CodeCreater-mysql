@@ -52,7 +52,7 @@ public class DaoCreater extends Creater{
 		sb.append("\tint update("+ beanName + " "+ NameUtil.getLowCaseName(beanName) + ");\n\n");
 		sb.append("\tint insert("+ beanName + " "+ NameUtil.getLowCaseName(beanName) +");\n\n");
 		sb.append("\tint delete("+ beanName + " "+ NameUtil.getLowCaseName(beanName) +");\n\n");
-		sb.append("\t" + beanName + " getById(String id);\n");
+		sb.append("\t" + beanName + " getById(Object id);\n");
 
 		sb.append("}");
 		try{

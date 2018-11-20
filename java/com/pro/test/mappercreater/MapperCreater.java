@@ -13,7 +13,6 @@ import java.util.Set;
 
 public class MapperCreater extends Creater{
 	
-	
 	MapperCreater(){
 		super();
 		configMap.put("basePackageName", "com.cmx");
@@ -37,15 +36,15 @@ public class MapperCreater extends Creater{
 				}
 			}
 			if(s.endsWith("-key")){//这里取到每个表的主键，但是一般情况下，表都使用id当做操作条件，所以暂时不使用主键。
-				//System.out.println(tableinfo.get(s));
+				continue;
 			}else{
-				mapperCodeCreater(newStr, s, (List<Map<String, Object>>)tableinfo.get(s));
+				mapperCodeCreater(newStr, s, (List<Map<String, Object>>)tableinfo.get(s), ((List<String>)tableinfo.get(s+"-key")).get(0));
 			}
 		}
 	}
 	
 	//创建mybatis mapper.xml模板
-	public void mapperCodeCreater(String beanName, String tableName, List<Map<String, Object>> infolist){
+	public void mapperCodeCreater(String beanName, String tableName, List<Map<String, Object>> infolist, String primaryKey){
 		StringBuffer sb = new StringBuffer();
 		List<String> configNameList = new ArrayList<String>();
 		String upName = beanName.substring(0, 1).toUpperCase()+beanName.substring(1);
@@ -130,7 +129,7 @@ public class MapperCreater extends Creater{
 		sb.append("\n");
 		//delete start 
 		sb.append("\t<delete id = \"delete\" parameterType = \"String\">\n");
-		sb.append("\t\tdelete from <include refid=\"table\"/>\n\t\twhere id = #{id}\n");
+		sb.append("\t\tdelete from <include refid=\"table\"/>\n\t\twhere "+ primaryKey +" = #{"+ NameUtil.lineToHump(primaryKey) +"}\n");
 		sb.append("\t</delete>\n");
 		//delete end
 		sb.append("\n");
@@ -145,16 +144,16 @@ public class MapperCreater extends Creater{
 			sb.append("</if>\n");
 		}
 		sb.append("\t\t</trim>\n");
-		sb.append("\t\twhere id = #{id}\n");
+		sb.append("\t\twhere "+ primaryKey +" = #{"+ NameUtil.lineToHump(primaryKey) +"}\n");
 		sb.append("\t</update>\n");
 		//update end
 		sb.append("\n");
 		//getById start 
-		sb.append("\t<select id = \"getById\" parameterType = \"String\" resultType = \""+ beanName +"\">\n");
+		sb.append("\t<select id = \"getById\" resultMap = \"BaseResultMap\">\n");
 		sb.append("\t\tselect <include refid = \"columns\" />\n");
-		sb.append("\t\tfrom "+ tableName +"\n");
+		sb.append("\t\tfrom <include refid = \"table\" />\n");
 		sb.append("\t\twhere\n");
-		sb.append("\t\tid = #{id}\n");
+		sb.append("\t\t"+ primaryKey +" = #{"+ NameUtil.lineToHump(primaryKey) +"}\n");
 		sb.append("\t</select>\n");
 		//getById end
 		sb.append("\n</mapper>");
